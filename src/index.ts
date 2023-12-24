@@ -9,5 +9,5 @@ import { TwitterHelper } from "./TwitterHelper";
 
   const twitterHelper = new TwitterHelper();
   const page = await twitterHelper.login(browser);
-  await twitterHelper.getUserMedia(page, "...");
+  await twitterHelper.getUserMedia(page, "");
 })();
