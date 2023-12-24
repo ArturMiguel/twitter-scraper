@@ -1,4 +1,5 @@
 import { Browser, Page } from "puppeteer";
+import { UserMedia } from "./types/UserMedia";
 
 export class TwitterHelper {
   private waitForNetworkIdle = async (page: Page) => {
@@ -58,8 +59,10 @@ export class TwitterHelper {
     return page;
   }
 
-  async getUserMedia(page: Page, userMediaURL: string) {
+  async getUserMedia(page: Page, userMediaURL: string): Promise<UserMedia[]> {
     await page.goto(userMediaURL);
+
+    const userMedias: UserMedia[] = [];
 
     page.on("response", async (response) => {
       const url = response.url();
@@ -82,25 +85,25 @@ export class TwitterHelper {
           if (result != null) {
             const medias = result.__typename == "TweetWithVisibilityResults" ? result.tweet.legacy.entities.media : result.legacy.entities.media;
             for (let media of medias) {
-              let userMedia = {};
 
               const mediaType = media.type;
 
               if (mediaType == "photo") {
-                userMedia = {
+                userMedias.push({
                   key: media.media_key,
                   type: mediaType,
-                  url: media.media_url_https
-                }
+                  url: media.media_url_https,
+                  thumbnail: null
+                })
               } else if (mediaType == "video") {
                 const [video] = media.video_info.variants.filter(v => v.content_type == "video/mp4").sort((a, b) => b.bitrate - a.bitrate);
-                userMedia = {
+                userMedias.push({
                   key: media.media_key,
                   type: video.content_type,
-                  url: video.url
-                }
+                  url: video.url,
+                  thumbnail: media.media_url_https
+                })
               }
-              console.log(JSON.stringify(userMedia));
             }
           }
         }
@@ -114,7 +117,7 @@ export class TwitterHelper {
       await this.waitForNetworkIdle(page);
       const currentHeight = await page.evaluate("document.body.scrollHeight");
       if (currentHeight === lastHeight) {
-        break;
+        return userMedias;
       }
       lastHeight = currentHeight;
     }
