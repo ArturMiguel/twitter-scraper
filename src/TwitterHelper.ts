@@ -80,7 +80,7 @@ export class TwitterHelper {
         for (let item of itens) {
           const result = item.item.itemContent.tweet_results.result;
           if (result != null) {
-            const medias = result.legacy.entities.media;
+            const medias = result.__typename == "TweetWithVisibilityResults" ? result.tweet.legacy.entities.media : result.legacy.entities.media;
             for (let media of medias) {
               let userMedia = {};
 
