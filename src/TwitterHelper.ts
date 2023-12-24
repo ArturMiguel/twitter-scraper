@@ -1,5 +1,6 @@
 import { Browser, Page } from "puppeteer";
 import { UserMedia } from "./types/UserMedia";
+import ora from "ora";
 
 export class TwitterHelper {
   private waitForNetworkIdle = async (page: Page) => {
@@ -7,8 +8,11 @@ export class TwitterHelper {
       idleTime: 2000
     });
   }
+  private spinner: ora.Ora = null;
 
   async login(browser: Browser): Promise<Page> {
+    this.spinner = ora("Authenticating user").start();
+
     // Open login page
     const page = await browser.newPage();
     await page.goto("https://twitter.com/i/flow/login");
@@ -56,6 +60,8 @@ export class TwitterHelper {
     );
     await this.waitForNetworkIdle(page);
 
+    this.spinner.succeed();
+
     return page;
   }
 
@@ -63,6 +69,8 @@ export class TwitterHelper {
     await page.goto(userMediaURL);
 
     const userMedias: UserMedia[] = [];
+
+    this.spinner.start("Searching all media");
 
     page.on("response", async (response) => {
       const url = response.url();
@@ -107,6 +115,8 @@ export class TwitterHelper {
             }
           }
         }
+
+        this.spinner.start(`Searching all media. Found: ${userMedias.length}`);
       }
     })
 
@@ -117,6 +127,7 @@ export class TwitterHelper {
       await this.waitForNetworkIdle(page);
       const currentHeight = await page.evaluate("document.body.scrollHeight");
       if (currentHeight === lastHeight) {
+        this.spinner.succeed();
         return userMedias;
       }
       lastHeight = currentHeight;

@@ -14,9 +14,12 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.3.1",
+    "inquirer": "^8.2.6",
+    "ora": "^5.4.1",
     "puppeteer": "^21.6.1"
   },
   "devDependencies": {
+    "@types/inquirer": "^9.0.7",
     "ts-node-dev": "^2.0.0"
   }
 }
