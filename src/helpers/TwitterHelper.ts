@@ -65,7 +65,7 @@ export class TwitterHelper {
     return page;
   }
 
-  async getUserMedia(page: Page, userMediaURL: string): Promise<UserMedia[]> {
+  async getUserMedia(browser: Browser, page: Page, userMediaURL: string): Promise<UserMedia[]> {
     await page.goto(userMediaURL);
 
     const userMedias: UserMedia[] = [];
@@ -91,7 +91,15 @@ export class TwitterHelper {
         for (let item of itens) {
           const result = item.item.itemContent.tweet_results.result;
           if (result != null) {
-            const medias = result.__typename == "TweetWithVisibilityResults" ? result.tweet.legacy.entities.media : result.legacy.entities.media;
+            const tweetTypeName = result.__typename;
+
+            if (tweetTypeName == "TweetTombstone") {
+              this.spinner.fail(result.tombstone.text.text);
+              await browser.close();
+              process.exit(1);
+            }
+
+            const medias = tweetTypeName == "TweetWithVisibilityResults" ? result.tweet.legacy.entities.media : result.legacy.entities.media;
             for (let media of medias) {
 
               const mediaType = media.type;

@@ -24,7 +24,7 @@ import { FileHelper } from "./helpers/FileHelper";
 
   const twitterHelper = new TwitterHelper();
   const page = await twitterHelper.login(browser);
-  const userMedias = await twitterHelper.getUserMedia(page, form.userMediaURL);
+  const userMedias = await twitterHelper.getUserMedia(browser, page, form.userMediaURL);
   await browser.close();
 
   await FileHelper.downloadBatch(userMedias, form.downloadDir);
