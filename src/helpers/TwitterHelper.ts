@@ -1,5 +1,5 @@
 import { Browser, Page } from "puppeteer";
-import { UserMedia } from "./types/UserMedia";
+import { UserMedia } from "../types/UserMedia";
 import ora from "ora";
 
 export class TwitterHelper {
@@ -116,7 +116,7 @@ export class TwitterHelper {
           }
         }
 
-        this.spinner.start(`Searching all media. Found: ${userMedias.length}`);
+        this.spinner.start(`Searching all media. Found: ${userMedias.filter(m => m.type == "photo").length} images and ${userMedias.filter(m => m.type == "video/mp4").length} videos`);
       }
     })
 
