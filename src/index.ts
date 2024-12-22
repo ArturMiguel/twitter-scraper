@@ -19,7 +19,7 @@ import { FileHelper } from "./helpers/FileHelper";
   ]);
 
   const browser = await puppeteer.launch({
-    headless: false
+    headless: "new"
   });
 
   const xHelper = new XHelper();

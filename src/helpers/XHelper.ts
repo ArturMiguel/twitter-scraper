@@ -25,7 +25,7 @@ export class XHelper {
     );
 
     // Type phone/username in case of "X" suspicious activity
-    const phoneOrUsernameInputSelector = "input[data-testid='ocfEnterTextTextInput']";
+    const phoneOrUsernameInputSelector = "button[data-testid='ocfEnterTextNextButton']";
     const hasSuspicious = await page.waitForSelector(phoneOrUsernameInputSelector, {
       timeout: 5000
     }).then(() => true).catch(() => false);
@@ -35,7 +35,7 @@ export class XHelper {
       });
     }
     await page.evaluate(() =>
-      (document.querySelectorAll("button")[4] as HTMLButtonElement).click()
+      (document.querySelectorAll("button")[2] as HTMLButtonElement).click()
     );
 
     // Type password
