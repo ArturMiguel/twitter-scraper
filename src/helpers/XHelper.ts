@@ -2,12 +2,7 @@ import { Browser, Page } from "puppeteer";
 import { UserMedia } from "../types/UserMedia";
 import ora from "ora";
 
-export class TwitterHelper {
-  private waitForNetworkIdle = async (page: Page) => {
-    await page.waitForNetworkIdle({
-      idleTime: 2000
-    });
-  }
+export class XHelper {
   private spinner: ora.Ora = null;
 
   async login(browser: Browser): Promise<Page> {
@@ -15,58 +10,56 @@ export class TwitterHelper {
 
     // Open login page
     const page = await browser.newPage();
-    await page.goto("https://twitter.com/i/flow/login");
-
-    await this.waitForNetworkIdle(page);
+    await page.goto("https://x.com/i/flow/login");
 
     // Type user
     const emailInputSelector = "input[name='text']";
     await page.waitForSelector(emailInputSelector);
-    await page.type(emailInputSelector, process.env.TWITTER_USER, {
+    await page.type(emailInputSelector, process.env.X_USER, {
       delay: 50
     });
 
     // Click on "next" button
     await page.evaluate(() =>
-      (document.querySelectorAll('div[role="button"]')[2] as HTMLButtonElement).click()
+      (document.querySelectorAll("button")[3] as HTMLButtonElement).click()
     );
-    await this.waitForNetworkIdle(page);
 
-    // Type phone/username in case of Twitter suspicious activity
+    // Type phone/username in case of "X" suspicious activity
     const phoneOrUsernameInputSelector = "input[data-testid='ocfEnterTextTextInput']";
     const hasSuspicious = await page.waitForSelector(phoneOrUsernameInputSelector, {
       timeout: 5000
     }).then(() => true).catch(() => false);
     if (hasSuspicious) {
-      await page.type(phoneOrUsernameInputSelector, process.env.TWITTER_USERNAME_OR_PHONE, {
+      await page.type(phoneOrUsernameInputSelector, process.env.X_USERNAME_OR_PHONE, {
         delay: 50
       });
     }
     await page.evaluate(() =>
-      (document.querySelectorAll('div[role="button"]')[1] as HTMLButtonElement).click()
+      (document.querySelectorAll("button")[4] as HTMLButtonElement).click()
     );
-    await this.waitForNetworkIdle(page);
 
     // Type password
     const passwordInputSelector = "input[name='password']";
     await page.waitForSelector(passwordInputSelector);
-    await page.type(passwordInputSelector, process.env.TWITTER_PASSWORD, {
+    await page.type(passwordInputSelector, process.env.X_PASSWORD, {
       delay: 50
     });
 
     // Click on login button
     await page.evaluate(() =>
-      (document.querySelectorAll('div[role="button"]')[2] as HTMLButtonElement).click()
+      (document.querySelectorAll("button")[4] as HTMLButtonElement).click()
     );
-    await this.waitForNetworkIdle(page);
-
     this.spinner.succeed();
+
+    await page.waitForNavigation();
 
     return page;
   }
 
   async getUserMedia(browser: Browser, page: Page, userMediaURL: string): Promise<UserMedia[]> {
     await page.goto(userMediaURL);
+
+    await page.waitForNavigation();
 
     const userMedias: UserMedia[] = [];
 
@@ -76,7 +69,7 @@ export class TwitterHelper {
       const url = response.url();
 
       // Watch network responses for user media endpoint
-      if (url.includes("https://twitter.com/i/api/graphql") && url.includes("/UserMedia")) {
+      if (url.includes("https://x.com/i/api/graphql") && url.includes("/UserMedia")) {
         const json = await response.json();
 
         let itens = [];
@@ -132,7 +125,9 @@ export class TwitterHelper {
     let lastHeight = await page.evaluate("document.body.scrollHeight");
     while (true) {
       await page.evaluate("window.scrollTo(0, document.body.scrollHeight)");
-      await this.waitForNetworkIdle(page);
+      await new Promise((resolve) => {
+        setTimeout(() => resolve(1), 5000);
+      })
       const currentHeight = await page.evaluate("document.body.scrollHeight");
       if (currentHeight === lastHeight) {
         this.spinner.succeed();

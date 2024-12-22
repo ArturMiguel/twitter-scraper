@@ -1,13 +1,13 @@
-# Twitter Scraper
+# X (old Twitter) Scraper
 
-A Twitter [scraper](https://pt.wikipedia.org/wiki/Coleta_de_dados_web) with Node.js and Puppeteer to automatically sign-in and download user media.
+A "X" (old Twitter) [scraper](https://pt.wikipedia.org/wiki/Coleta_de_dados_web) with Node.js and Puppeteer to automatically sign-in and download user media.
 
 ![image](./src/assets/preview.jpg)
 
 ## Features
 
 - Automated sign-in.
-- Automated search for user media and download them. Supports image/videos, albums and Twitter pagination.
+- Automated search for user media and download them. Supports image/videos, albums and "X" pagination.
 
 ## How to install and run:
 - You need to have Node.js >= v16 and TypeScript installed.
@@ -18,9 +18,9 @@ A Twitter [scraper](https://pt.wikipedia.org/wiki/Coleta_de_dados_web) with Node
 
 ## Disclaimer
 
-This is a test repository for personal use, all content collected from Twitter is public and accessed by any user, i just automated this process.
+This is a test repository for personal use, all content collected from "X" is public and accessed by any user, i just automated this process.
 
-If you want to use Twitter services commercially or professionally, i recommend the official Twitter API https://developer.twitter.com/en/docs/twitter-api.
+If you want to use "X" services commercially or professionally, i recommend the official X API https://developer.x.com/en/docs/x-api.
 
 ## License
 

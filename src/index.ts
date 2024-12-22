@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer";
 import "dotenv/config";
-import { TwitterHelper } from "./helpers/TwitterHelper";
+import { XHelper } from "./helpers/XHelper";
 import inquirer from "inquirer";
 import { FileHelper } from "./helpers/FileHelper";
 
@@ -19,12 +19,12 @@ import { FileHelper } from "./helpers/FileHelper";
   ]);
 
   const browser = await puppeteer.launch({
-    headless: "new"
+    headless: false
   });
 
-  const twitterHelper = new TwitterHelper();
-  const page = await twitterHelper.login(browser);
-  const userMedias = await twitterHelper.getUserMedia(browser, page, form.userMediaURL);
+  const xHelper = new XHelper();
+  const page = await xHelper.login(browser);
+  const userMedias = await xHelper.getUserMedia(browser, page, form.userMediaURL);
   await browser.close();
 
   await FileHelper.downloadBatch(userMedias, form.downloadDir);
